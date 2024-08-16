@@ -1,14 +1,15 @@
-## 【Solidity Yul Assembly】1.1 | Types
+# 【Solidity Yul Assembly】1.1 | Types
 
-**Yul 没有类型，或者说只有一种类型 —— u256 或者说是 bytes32.**  
+**在 Yul 中没有多种类型的概念，或者说只有一种类型——u256，也可以理解为 bytes32。**  
 
-我们直接来看例子：    
+我们直接通过例子来学习。  
+首先，让我们看看如何在 Yul 中实现一个简单的函数：  
 ``` solidity
 function getNumber() external pure returns (uint256) {
     return 42;
 }
 ```
-在 Yul 中该怎么写呢？    
+在 Yul 中，这段代码可以这样写：  
 ``` solidity
 function getNumber() external pure returns (uint256) {
     uint256 x;
@@ -20,9 +21,9 @@ function getNumber() external pure returns (uint256) {
     return x;
 }
 ```
-从上面代码可以看出：Yul 代码是没有分号结尾的。
+从上面的代码可以看出，Yul 代码是没有分号结尾的。  
 
-以下是一段错误的代码：  
+接下来我们来看一个与字符串相关的例子：  
 ``` solidity
 function demoString() external pure returns (string memory){
     string memory myString = "";
@@ -34,9 +35,9 @@ function demoString() external pure returns (string memory){
     return myString;
 }
 ```
-由于 `string memory myString` 存储在内存中，并不在栈中，所以 `myString` 其实是栈上指向内存位置的指针。`myString := "hello world"`相当于把 "hello world" 赋值给一个指针，所以当然是错的。  
+这段代码是错误的，因为 `string memory myString` 是存储在内存中的，而 Yul 中的赋值语句 `myString := "hello world"` 是把一个字面量赋值给一个栈上的指针，这显然是不对的。    
   
-接下来看看正确的写法：  
+来看正确的写法：  
 ``` solidity
 function demoString() external pure returns (bytes32){
     bytes32 myString = "";
@@ -48,9 +49,9 @@ function demoString() external pure returns (bytes32){
     return myString;
 }
 ```
-返回值为 "hello world" 对应的 bytes32, 稍后可以将在 Solidity 中做转化。bytes32 总是存储在栈上。  
+这个函数返回的是 "hello world" 对应的 bytes32。稍后我们可以在 Solidity 中将其转化为字符串类型。值得注意的是，bytes32 总是存储在栈上。    
 
-做转化的写法：  
+如果我们想把这个 bytes32 转化为字符串，可以这样写：  
 ``` solidity
 function demoString() external pure returns (string memory){
     bytes32 myString = "";
@@ -62,11 +63,8 @@ function demoString() external pure returns (string memory){
     return string(abi.encode(myString));
 }
 ```
-  
-如果字面量超过了 32 字节，编译器则会报错，之后我们将解释怎么处理。  
-可以看出，存储在栈中的都是 bytes32 只是 Solidity 会根据不同的类型做出不同的解释。  
-
-再看看几个例子。  
+需要注意的是，如果字面量超过了 32 字节，编译器会报错。后续我们会探讨如何处理这种情况。通过这些例子，我们可以看到，存储在栈中的数据其实都是 bytes32，Solidity 会根据不同的类型解释这些数据。  
+再来看几个例子：  
 ``` solidity
 function representation() external pure returns(bool) {
     bool x;
@@ -88,8 +86,5 @@ function representation() external pure returns(address) {
 }
 ```
 
-### 总结：
-1. Yul 统一类型: 在 Yul 中，所有数据类型都统一为 bytes32，无论在 Solidity 中是 uint256、string memory 还是 address，它们在 Yul 中的表示形式都是 bytes32。  
-2. 无类型操作: 由于 Yul 中没有显式的类型概念，因此在操作数据时，开发者需要了解不同类型在内存和栈中的表示方式。  
-3. 字符串处理: 直接将字符串赋值给栈中的变量会导致错误，需要先将字符串转换为 bytes32，并在必要时在 Solidity 中进行类型转换。  
-
+**总结：**
+通过这些例子，我们看到了 Yul 中的类型处理方式。Yul 中的所有数据都是以 bytes32 的形式存储在栈上，Solidity 则根据不同的上下文来解释这些数据。
