@@ -1,6 +1,6 @@
 ## 【Solidity Yul Assembly】1.1 | Types
 
-**Yul 没有类型，或者说只有一种类型 —— u256 或者说是 bytes32.  **
+**Yul 没有类型，或者说只有一种类型 —— u256 或者说是 bytes32.**  
 
 我们直接来看例子：    
 ``` solidity
