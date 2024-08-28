@@ -49,7 +49,7 @@ function v2YulEmitLog() external {
     }
 }
 ```
-在 `SomeLogV2` 事件中，`bool` 类型的字段没有被 `indexed` 修饰，因此需要先将其存入内存中，此处存放在了内存槽 `0x00` 的位置。这里多解释一下，有些读者可能会问，在 Solidity 中不是内存从 0x80 开始使用的吗，但注意，这里函数没有使用到 Solidity 部分的代码，所以不需要遵从 Solidity 的默认内存管理方式。  
+在 `SomeLogV2` 事件中，`bool` 类型的字段没有被 `indexed` 修饰，因此需要先将其存入内存中，此处存放在了内存槽 `0x00` 的位置。   
 然后事件中 `bool` 类型的字段通过日志指令记录到 `data` 字段中。  
 
 ![](/img/yul-2.5/2.png)
